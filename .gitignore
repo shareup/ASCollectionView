@@ -1,1 +1,4 @@
 Demo/BuildTools/.build
+.swiftpm
+xcuserdata
+*.xcuserdatad
