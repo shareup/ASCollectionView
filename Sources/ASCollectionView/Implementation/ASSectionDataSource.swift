@@ -290,7 +290,7 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 			return selectedIndexes?.wrappedValue.contains(index) ?? false
 		}
 	}
-	
+
 	func updateSelection(_ indices: Set<Int>)
 	{
 		DispatchQueue.main.async {
@@ -298,19 +298,19 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 			self.selectedIndexes?.wrappedValue = Set(indices)
 		}
 	}
-	
+
 	func shouldSelect(_ indexPath: IndexPath) -> Bool
 	{
 		guard data.containsIndex(indexPath.item) else { return allowsSelection }
 		return shouldAllowSelection?(indexPath.item) ?? allowsSelection
 	}
-	
+
 	func shouldDeselect(_ indexPath: IndexPath) -> Bool
 	{
 		guard data.containsIndex(indexPath.item) else { return allowsSelection }
 		return shouldAllowDeselection?(indexPath.item) ?? allowsSelection
 	}
-	
+
 	private var allowsSelection: Bool {
 		selectedIndex != nil || selectedIndexes != nil
 	}
