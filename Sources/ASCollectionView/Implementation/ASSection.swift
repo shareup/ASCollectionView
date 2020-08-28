@@ -48,36 +48,6 @@ public struct ASSection<SectionID: Hashable>
 	var estimatedFooterHeight: CGFloat?
 }
 
-@available(iOS 13.0, *)
-public struct Selection<Data> {
-	public let items: [(Int, Data)]
-
-	/// `item` is guaranteed to exist because empty selection is modeled by a `nil` `Selection` in
-	/// `ASSection`.
-	public var item: (Int, Data) { items[0] }
-}
-
-@available(iOS 13.0, *)
-extension Selection: Equatable where Data: Equatable {
-	public static func == (lhs: Selection<Data>, rhs: Selection<Data>) -> Bool {
-		zip(lhs.items, rhs.items).reduce(true) { (isEqual: Bool, elements: ((Int, Data), (Int, Data))) -> Bool in
-			guard isEqual else { return false }
-			let (left, right) = elements
-			return left.0 == right.0 && left.1 == right.1
-		}
-	}
-}
-
-@available(iOS 13.0, *)
-extension Selection: Hashable where Data: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		items.forEach { (index: Int, data: Data) in
-			hasher.combine(index)
-			hasher.combine(data)
-		}
-	}
-}
-
 // MARK: SUPPLEMENTARY VIEWS - INTERNAL
 
 @available(iOS 13.0, *)

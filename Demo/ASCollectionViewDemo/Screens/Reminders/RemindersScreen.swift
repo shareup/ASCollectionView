@@ -28,12 +28,12 @@ struct RemindersScreen: View
 	{
 		ASCollectionView
 		{
-			ASCollectionViewSection<Section>(id: .upper, data: self.upperData)
+			ASCollectionViewSection<Section>(id: .upper, data: self.upperData, selectedIndexes: nil)
 			{ model, _ in
 				GroupLarge(model: model)
 			}
 
-			ASCollectionViewSection<Section>(id: .list, data: self.lowerData)
+			ASCollectionViewSection<Section>(id: .list, data: self.lowerData, selectedIndexes: nil)
 			{ model, info in
 				VStack(spacing: 0)
 				{

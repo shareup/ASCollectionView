@@ -9,7 +9,7 @@ import SwiftUI
 public extension ASSection
 {
 	/**
-	 Initializes a  section with data
+	 Initializes a section with data supporting optional single selection.
 
 	 - Parameters:
 	 - id: The id for this section
@@ -24,8 +24,7 @@ public extension ASSection
 		data: DataCollection,
 		dataID dataIDKeyPath: KeyPath<DataCollection.Element, DataID>,
 		container: @escaping ((Content) -> Container),
-		selection: Binding<Selection<DataCollection.Element>?>? = nil,
-		selectedIndexes: Binding<Set<Int>>? = nil,
+		selectedIndex: Binding<Int?>? = nil,
 		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
 		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
 		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
@@ -36,27 +35,47 @@ public extension ASSection
 		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
 		where DataCollection.Index == Int
 	{
-		self.id = id
-		dataSource = ASSectionDataSource<DataCollection, DataID, Content, Container>(
-			data: data,
-			dataIDKeyPath: dataIDKeyPath,
-			container: container,
-			content: contentBuilder,
-			selectedIndexes: selectedIndexes,
-			shouldAllowSelection: shouldAllowSelection,
-			shouldAllowDeselection: shouldAllowDeselection,
-			onCellEvent: onCellEvent,
-			dragDropConfig: dragDropConfig,
-			shouldAllowSwipeToDelete: shouldAllowSwipeToDelete,
-			onSwipeToDelete: onSwipeToDelete,
-			contextMenuProvider: contextMenuProvider)
+		self.init(id: id, data: data, dataID: dataIDKeyPath, container: container, selectedIndex: selectedIndex, selectedIndexes: nil, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
 	}
 
 	init<DataCollection: RandomAccessCollection, DataID: Hashable, Content: View>(
 		id: SectionID,
 		data: DataCollection,
 		dataID dataIDKeyPath: KeyPath<DataCollection.Element, DataID>,
-		selection: Binding<Selection<DataCollection.Element>?>? = nil,
+		selectedIndex: Binding<Int?>? = nil,
+		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
+		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
+		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
+		dragDropConfig: ASDragDropConfig<DataCollection.Element> = .disabled,
+		shouldAllowSwipeToDelete: ShouldAllowSwipeToDelete? = nil,
+		onSwipeToDelete: OnSwipeToDelete<DataCollection.Element>? = nil,
+		contextMenuProvider: ContextMenuProvider<DataCollection.Element>? = nil,
+		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
+		where DataCollection.Index == Int
+	{
+		self.init(id: id, data: data, dataID: dataIDKeyPath, container: { $0 }, selectedIndex: selectedIndex, selectedIndexes: nil, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+	}
+}
+
+@available(iOS 13.0, *)
+public extension ASSection
+{
+	/**
+	 Initializes a section with data supporting optional multiple selection.
+
+	 - Parameters:
+	 - id: The id for this section
+	 - data: The data to display in the section. This initialiser expects data that conforms to 'Identifiable'
+	 - dataID: The keypath to a hashable identifier of each data item
+	 - onCellEvent: Use this to respond to cell appearance/disappearance, and preloading events.
+	 - onDragDropEvent: Define this closure to enable drag/drop and respond to events (default is nil: drag/drop disabled)
+	 - contentBuilder: A closure returning a SwiftUI view for the given data item
+	 */
+	init<DataCollection: RandomAccessCollection, DataID: Hashable, Content: View, Container: View>(
+		id: SectionID,
+		data: DataCollection,
+		dataID dataIDKeyPath: KeyPath<DataCollection.Element, DataID>,
+		container: @escaping ((Content) -> Container),
 		selectedIndexes: Binding<Set<Int>>? = nil,
 		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
 		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
@@ -68,17 +87,83 @@ public extension ASSection
 		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
 		where DataCollection.Index == Int
 	{
-		self.init(id: id, data: data, dataID: dataIDKeyPath, container: { $0 }, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+		self.init(id: id, data: data, dataID: dataIDKeyPath, container: container, selectedIndex: nil, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+	}
+
+	init<DataCollection: RandomAccessCollection, DataID: Hashable, Content: View>(
+		id: SectionID,
+		data: DataCollection,
+		dataID dataIDKeyPath: KeyPath<DataCollection.Element, DataID>,
+		selectedIndexes: Binding<Set<Int>>? = nil,
+		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
+		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
+		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
+		dragDropConfig: ASDragDropConfig<DataCollection.Element> = .disabled,
+		shouldAllowSwipeToDelete: ShouldAllowSwipeToDelete? = nil,
+		onSwipeToDelete: OnSwipeToDelete<DataCollection.Element>? = nil,
+		contextMenuProvider: ContextMenuProvider<DataCollection.Element>? = nil,
+		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
+		where DataCollection.Index == Int
+	{
+		self.init(id: id, data: data, dataID: dataIDKeyPath, container: { $0 }, selectedIndex: nil, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
 	}
 }
 
 // MARK: IDENTIFIABLE DATA SECTION
 
 @available(iOS 13.0, *)
+public extension ASSection
+{
+	/**
+	Initializes a section with identifiable data allowing for optional single selection
+	- Parameters:
+	- id: The id for this section
+	- data: The data to display in the section. This initialiser expects data that conforms to 'Identifiable'
+	- onCellEvent: Use this to respond to cell appearance/disappearance, and preloading events.
+	- onDragDropEvent: Define this closure to enable drag/drop and respond to events (default is nil: drag/drop disabled)
+	- contentBuilder: A closure returning a SwiftUI view for the given data item
+	*/
+	init<Content: View, Container: View, DataCollection: RandomAccessCollection>(
+		id: SectionID,
+		data: DataCollection,
+		container: @escaping ((Content) -> Container),
+		selectedIndex: Binding<Int?>? = nil,
+		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
+		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
+		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
+		dragDropConfig: ASDragDropConfig<DataCollection.Element> = .disabled,
+		shouldAllowSwipeToDelete: ShouldAllowSwipeToDelete? = nil,
+		onSwipeToDelete: OnSwipeToDelete<DataCollection.Element>? = nil,
+		contextMenuProvider: ContextMenuProvider<DataCollection.Element>? = nil,
+		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
+		where DataCollection.Index == Int, DataCollection.Element: Identifiable
+	{
+		self.init(id: id, data: data, dataID: \.id, container: container, selectedIndex: selectedIndex, selectedIndexes: nil, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+	}
+
+	init<Content: View, DataCollection: RandomAccessCollection>(
+		id: SectionID,
+		data: DataCollection,
+		selectedIndex: Binding<Int?>? = nil,
+		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
+		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
+		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
+		dragDropConfig: ASDragDropConfig<DataCollection.Element> = .disabled,
+		shouldAllowSwipeToDelete: ShouldAllowSwipeToDelete? = nil,
+		onSwipeToDelete: OnSwipeToDelete<DataCollection.Element>? = nil,
+		contextMenuProvider: ContextMenuProvider<DataCollection.Element>? = nil,
+		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
+		where DataCollection.Index == Int, DataCollection.Element: Identifiable
+	{
+        self.init(id: id, data: data, dataID: \.id, container: { $0 }, selectedIndex: selectedIndex, selectedIndexes: nil, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+	}
+}
+
+@available(iOS 13.0, *)
 public extension ASCollectionViewSection
 {
 	/**
-	 Initializes a  section with identifiable data
+	 Initializes a section with identifiable data allowing for optional multiple selection
 	 - Parameters:
 	 - id: The id for this section
 	 - data: The data to display in the section. This initialiser expects data that conforms to 'Identifiable'
@@ -90,7 +175,6 @@ public extension ASCollectionViewSection
 		id: SectionID,
 		data: DataCollection,
 		container: @escaping ((Content) -> Container),
-		selection: Binding<Selection<DataCollection.Element>?>? = nil,
 		selectedIndexes: Binding<Set<Int>>? = nil,
 		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
 		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
@@ -102,13 +186,12 @@ public extension ASCollectionViewSection
 		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
 		where DataCollection.Index == Int, DataCollection.Element: Identifiable
 	{
-		self.init(id: id, data: data, dataID: \.id, container: container, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+		self.init(id: id, data: data, dataID: \.id, container: container, selectedIndex: nil, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
 	}
 
 	init<Content: View, DataCollection: RandomAccessCollection>(
 		id: SectionID,
 		data: DataCollection,
-		selection: Binding<Selection<DataCollection.Element>?>? = nil,
 		selectedIndexes: Binding<Set<Int>>? = nil,
 		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
 		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
@@ -120,7 +203,7 @@ public extension ASCollectionViewSection
 		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
 		where DataCollection.Index == Int, DataCollection.Element: Identifiable
 	{
-		self.init(id: id, data: data, container: { $0 }, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+		self.init(id: id, data: data, dataID: \.id, container: { $0 }, selectedIndex: nil, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
 	}
 }
 
@@ -175,5 +258,59 @@ public extension ASCollectionViewSection
 
 	init<Content: View>(id: SectionID, content: () -> Content) {
 		self.init(id: id, container: { $0 }, content: content)
+	}
+}
+
+// MARK: PRIVATE INITIALIZER
+
+@available(iOS 13.0, *)
+private extension ASSection
+{
+	init<DataCollection: RandomAccessCollection, DataID: Hashable, Content: View, Container: View>(
+		id: SectionID,
+		data: DataCollection,
+		dataID dataIDKeyPath: KeyPath<DataCollection.Element, DataID>,
+		container: @escaping ((Content) -> Container),
+		selectedIndex: Binding<Int?>? = nil,
+		selectedIndexes: Binding<Set<Int>>? = nil,
+		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
+		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
+		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
+		dragDropConfig: ASDragDropConfig<DataCollection.Element> = .disabled,
+		shouldAllowSwipeToDelete: ShouldAllowSwipeToDelete? = nil,
+		onSwipeToDelete: OnSwipeToDelete<DataCollection.Element>? = nil,
+		contextMenuProvider: ContextMenuProvider<DataCollection.Element>? = nil,
+		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
+		where DataCollection.Index == Int
+	{
+		precondition(Self.atMostOne(selectedIndex, selectedIndexes), "Selection must be either single or multiple")
+		self.id = id
+		dataSource = ASSectionDataSource<DataCollection, DataID, Content, Container>(
+			data: data,
+			dataIDKeyPath: dataIDKeyPath,
+			container: container,
+			content: contentBuilder,
+			selectedIndex: selectedIndex,
+			selectedIndexes: selectedIndexes,
+			shouldAllowSelection: shouldAllowSelection,
+			shouldAllowDeselection: shouldAllowDeselection,
+			onCellEvent: onCellEvent,
+			dragDropConfig: dragDropConfig,
+			shouldAllowSwipeToDelete: shouldAllowSwipeToDelete,
+			onSwipeToDelete: onSwipeToDelete,
+			contextMenuProvider: contextMenuProvider)
+	}
+
+	static func atMostOne<A, B>(_ first: Optional<A>, _ second: Optional<B>) -> Bool {
+		switch (first, second) {
+		case (nil, nil):
+			return true
+		case (.some, nil):
+			return true
+		case (nil, .some):
+			return true
+		case (.some, .some):
+			return false
+		}
 	}
 }

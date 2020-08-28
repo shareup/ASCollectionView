@@ -21,6 +21,7 @@ struct TableViewDragAndDropScreen: View
 						id: 0,
 						data: groupA,
 						dataID: \.self,
+						selectedIndexes: nil,
 						dragDropConfig: ASDragDropConfig(dataBinding: $groupA).enableReordering(),
 						onSwipeToDelete: { index, _, callback in
 							withAnimation {
@@ -40,6 +41,7 @@ struct TableViewDragAndDropScreen: View
 						id: 1,
 						data: groupB,
 						dataID: \.self,
+						selectedIndexes: nil,
 						dragDropConfig: ASDragDropConfig(dataBinding: $groupB).enableReordering(),
 						onSwipeToDelete: { index, _, callback in
 							withAnimation {
@@ -61,6 +63,7 @@ struct TableViewDragAndDropScreen: View
 						id: 0,
 						data: groupC,
 						dataID: \.self,
+						selectedIndexes: nil,
 						dragDropConfig: ASDragDropConfig(dataBinding: $groupC).enableReordering(),
 						onSwipeToDelete: { index, _, callback in
 							withAnimation {
@@ -79,6 +82,7 @@ struct TableViewDragAndDropScreen: View
 						id: 1,
 						data: groupD,
 						dataID: \.self,
+						selectedIndexes: nil,
 						dragDropConfig: ASDragDropConfig(dataBinding: $groupD).enableReordering(),
 						onSwipeToDelete: { index, _, callback in
 							withAnimation {

@@ -55,7 +55,7 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 	var container: (Content) -> Container
 	var content: (DataCollection.Element, ASCellContext) -> Content
 
-	var selection: Binding<Selection<DataCollection.Element>?>?
+	var selectedIndex: Binding<Int?>?
 	var selectedIndexes: Binding<Set<Int>>?
 	var shouldAllowSelection: ((_ index: Int) -> Bool)?
 	var shouldAllowDeselection: ((_ index: Int) -> Bool)?
@@ -284,31 +284,35 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 
 	func isSelected(index: Int) -> Bool
 	{
-		selectedIndexes?.wrappedValue.contains(index) ?? false
+		if let selectedIndex = selectedIndex?.wrappedValue, selectedIndex == index {
+			return true
+		} else {
+			return selectedIndexes?.wrappedValue.contains(index) ?? false
+		}
 	}
-
+	
 	func updateSelection(_ indices: Set<Int>)
 	{
 		DispatchQueue.main.async {
-			let selectedItems = indices.sorted().compactMap { (index: Int) -> (Int, DataCollection.Element)? in
-				guard self.data.containsIndex(index) else { return nil }
-				return (index, self.data[index])
-			}
-			self.selection?.wrappedValue = selectedItems.isEmpty ? nil : Selection(items: selectedItems)
+			self.selectedIndex?.wrappedValue = indices.first
 			self.selectedIndexes?.wrappedValue = Set(indices)
 		}
 	}
-
+	
 	func shouldSelect(_ indexPath: IndexPath) -> Bool
 	{
-		guard data.containsIndex(indexPath.item) else { return (selectedIndexes != nil) }
-		return shouldAllowSelection?(indexPath.item) ?? (selectedIndexes != nil)
+		guard data.containsIndex(indexPath.item) else { return allowsSelection }
+		return shouldAllowSelection?(indexPath.item) ?? allowsSelection
 	}
-
+	
 	func shouldDeselect(_ indexPath: IndexPath) -> Bool
 	{
-		guard data.containsIndex(indexPath.item) else { return (selectedIndexes != nil) }
-		return shouldAllowDeselection?(indexPath.item) ?? (selectedIndexes != nil)
+		guard data.containsIndex(indexPath.item) else { return allowsSelection }
+		return shouldAllowDeselection?(indexPath.item) ?? allowsSelection
+	}
+	
+	private var allowsSelection: Bool {
+		selectedIndex != nil || selectedIndexes != nil
 	}
 }
 

@@ -33,6 +33,7 @@ struct AppStoreScreen: View
 			ASCollectionViewSection(
 				id: sectionID,
 				data: sectionData.apps,
+				selectedIndexes: nil,
 				onCellEvent: {
 					self.onCellEvent($0, sectionID: sectionID)
 			})

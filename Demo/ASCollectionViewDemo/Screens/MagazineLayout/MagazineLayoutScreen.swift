@@ -19,6 +19,7 @@ struct MagazineLayoutScreen: View
 			ASCollectionViewSection(
 				id: offset,
 				data: sectionData,
+				selectedIndexes: nil,
 				onCellEvent: onCellEvent,
 				contextMenuProvider: contextMenuProvider)
 			{ item, _ in

@@ -37,7 +37,8 @@ struct ExampleView: View
 			ASCollectionViewSection(
 				id: 0,
 				data: dataExampleA,
-				dataID: \.self)
+				dataID: \.self,
+				selectedIndexes: nil)
 			{ item, _ in
 				Color.blue
 					.overlay(
@@ -47,7 +48,8 @@ struct ExampleView: View
 			ASCollectionViewSection(
 				id: 1,
 				data: dataExampleB,
-				dataID: \.self)
+				dataID: \.self,
+				selectedIndexes: nil)
 			{ item, _ in
 				Color.green
 					.overlay(

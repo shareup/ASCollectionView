@@ -65,6 +65,8 @@ struct PhotoGridScreen: View
 		ASCollectionView(
 			section: section)
 			.layout(self.layout)
+			.allowsSelection(self.isEditing)
+			.allowsMultipleSelection(self.isEditing)
 			.edgesIgnoringSafeArea(.all)
 			.navigationBarTitle("Explore", displayMode: .large)
 			.navigationBarItems(

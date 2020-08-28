@@ -26,6 +26,7 @@ struct AdjustableGridScreen: View
 		ASCollectionViewSection(
 			id: 0,
 			data: data,
+			selectedIndexes: nil,
 			onCellEvent: onCellEvent)
 		{ item, _ in
 			ZStack(alignment: .bottomTrailing)

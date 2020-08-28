@@ -153,6 +153,7 @@ public extension ASCollectionView
 	func allowsMultipleSelection(_ allowsMultipleSelection: Bool) -> Self
 	{
 		var this = self
+		this.allowsSelection = allowsMultipleSelection ? true : this.allowsSelection
 		this.allowsMultipleSelection = allowsMultipleSelection
 		return this
 	}

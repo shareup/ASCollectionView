@@ -34,7 +34,7 @@ struct TagsScreen: View
 
 				ASCollectionView(
 					section:
-					ASCollectionViewSection(id: 0, data: store.items)
+					ASCollectionViewSection(id: 0, data: store.items, selectedIndexes: nil)
 					{ item, _ in
 						Text(item.displayString)
 							.fixedSize(horizontal: false, vertical: true)

@@ -16,6 +16,7 @@ struct InstaFeedScreen: View
 			ASCollectionViewSection(
 				id: 0,
 				data: storiesData,
+				selectedIndexes: nil,
 				onCellEvent: onCellEventStories)
 			{ item, _ in
 				StoryView(post: item)
@@ -47,6 +48,7 @@ struct InstaFeedScreen: View
 			ASTableViewSection(
 				id: i + 1,
 				data: sectionData,
+				selectedIndexes: nil,
 				onCellEvent: onCellEventPosts)
 			{ item, _ in
 				PostView(post: item)

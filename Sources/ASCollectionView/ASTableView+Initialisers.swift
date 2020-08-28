@@ -55,6 +55,7 @@ public extension ASTableView where SectionID == Int
 			id: 0,
 			data: data,
 			dataID: dataIDKeyPath,
+			selectedIndexes: nil,
 			contentBuilder: contentBuilder)
 		sections = [section]
 	}

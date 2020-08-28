@@ -68,6 +68,7 @@ public extension ASCollectionView where SectionID == Int
 			id: 0,
 			data: data,
 			dataID: dataIDKeyPath,
+			selectedIndexes: nil,
 			contentBuilder: contentBuilder)
 		sections = [section]
 	}
