@@ -55,6 +55,7 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 	var container: (Content) -> Container
 	var content: (DataCollection.Element, ASCellContext) -> Content
 
+	var selection: Binding<Selection<DataCollection.Element>?>?
 	var selectedIndexes: Binding<Set<Int>>?
 	var shouldAllowSelection: ((_ index: Int) -> Bool)?
 	var shouldAllowDeselection: ((_ index: Int) -> Bool)?
@@ -289,6 +290,11 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 	func updateSelection(_ indices: Set<Int>)
 	{
 		DispatchQueue.main.async {
+			let selectedItems = indices.sorted().compactMap { (index: Int) -> (Int, DataCollection.Element)? in
+				guard self.data.containsIndex(index) else { return nil }
+				return (index, self.data[index])
+			}
+			self.selection?.wrappedValue = selectedItems.isEmpty ? nil : Selection(items: selectedItems)
 			self.selectedIndexes?.wrappedValue = Set(indices)
 		}
 	}
