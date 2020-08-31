@@ -25,7 +25,6 @@ public extension ASSection
 		dataID dataIDKeyPath: KeyPath<DataCollection.Element, DataID>,
 		container: @escaping ((Content) -> Container),
 		selectedIndexes: Binding<Set<Int>>? = nil,
-		onUpdateSelection: ((_ indexes: Set<Int>) -> Void)? = nil,
 		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
 		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
 		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
@@ -43,7 +42,6 @@ public extension ASSection
 			container: container,
 			content: contentBuilder,
 			selectedIndexes: selectedIndexes,
-			onUpdateSelection: onUpdateSelection,
 			shouldAllowSelection: shouldAllowSelection,
 			shouldAllowDeselection: shouldAllowDeselection,
 			onCellEvent: onCellEvent,
@@ -58,7 +56,6 @@ public extension ASSection
 		data: DataCollection,
 		dataID dataIDKeyPath: KeyPath<DataCollection.Element, DataID>,
 		selectedIndexes: Binding<Set<Int>>? = nil,
-		onUpdateSelection: ((_ indexes: Set<Int>) -> Void)? = nil,
 		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
 		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
 		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
@@ -69,7 +66,7 @@ public extension ASSection
 		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
 		where DataCollection.Index == Int
 	{
-		self.init(id: id, data: data, dataID: dataIDKeyPath, container: { $0 }, selectedIndexes: selectedIndexes, onUpdateSelection: onUpdateSelection, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+		self.init(id: id, data: data, dataID: dataIDKeyPath, container: { $0 }, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
 	}
 }
 
@@ -92,7 +89,6 @@ public extension ASCollectionViewSection
 		data: DataCollection,
 		container: @escaping ((Content) -> Container),
 		selectedIndexes: Binding<Set<Int>>? = nil,
-		onUpdateSelection: ((_ indexes: Set<Int>) -> Void)? = nil,
 		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
 		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
 		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
@@ -103,14 +99,13 @@ public extension ASCollectionViewSection
 		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
 		where DataCollection.Index == Int, DataCollection.Element: Identifiable
 	{
-		self.init(id: id, data: data, dataID: \.id, container: container, selectedIndexes: selectedIndexes, onUpdateSelection: onUpdateSelection, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+		self.init(id: id, data: data, dataID: \.id, container: container, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
 	}
 
 	init<Content: View, DataCollection: RandomAccessCollection>(
 		id: SectionID,
 		data: DataCollection,
 		selectedIndexes: Binding<Set<Int>>? = nil,
-		onUpdateSelection: ((_ indexes: Set<Int>) -> Void)? = nil,
 		shouldAllowSelection: ((_ index: Int) -> Bool)? = nil,
 		shouldAllowDeselection: ((_ index: Int) -> Bool)? = nil,
 		onCellEvent: OnCellEvent<DataCollection.Element>? = nil,
@@ -121,7 +116,7 @@ public extension ASCollectionViewSection
 		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
 		where DataCollection.Index == Int, DataCollection.Element: Identifiable
 	{
-		self.init(id: id, data: data, container: { $0 }, selectedIndexes: selectedIndexes, onUpdateSelection: onUpdateSelection, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
+		self.init(id: id, data: data, container: { $0 }, selectedIndexes: selectedIndexes, shouldAllowSelection: shouldAllowSelection, shouldAllowDeselection: shouldAllowDeselection, onCellEvent: onCellEvent, dragDropConfig: dragDropConfig, shouldAllowSwipeToDelete: shouldAllowSwipeToDelete, onSwipeToDelete: onSwipeToDelete, contextMenuProvider: contextMenuProvider, contentBuilder: contentBuilder)
 	}
 }
 
