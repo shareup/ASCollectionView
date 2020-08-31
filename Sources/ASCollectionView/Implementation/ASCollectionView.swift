@@ -198,8 +198,9 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			assignIfChanged(collectionView, \.keyboardDismissMode, newValue: .onDrag)
 			updateCollectionViewContentInsets(collectionView)
 
-			assignIfChanged(collectionView, \.allowsSelection, newValue: parent.allowsSelection)
-			assignIfChanged(collectionView, \.allowsMultipleSelection, newValue: parent.allowsMultipleSelection)
+			let isEditing = parent.editMode?.wrappedValue.isEditing ?? false
+			assignIfChanged(collectionView, \.allowsSelection, newValue: parent.allowsSelection || isEditing)
+			assignIfChanged(collectionView, \.allowsMultipleSelection, newValue: parent.allowsMultipleSelection || isEditing)
 		}
 
 		func updateCollectionViewContentInsets(_ collectionView: UICollectionView)
