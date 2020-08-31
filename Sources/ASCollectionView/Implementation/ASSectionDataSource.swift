@@ -55,7 +55,8 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 	var container: (Content) -> Container
 	var content: (DataCollection.Element, ASCellContext) -> Content
 
-	var selectedItems: Binding<Set<Int>>?
+	var selectedIndexes: Binding<Set<Int>>?
+	var onUpdateSelection: ((_ indexes: Set<Int>) -> Void)?
 	var shouldAllowSelection: ((_ index: Int) -> Bool)?
 	var shouldAllowDeselection: ((_ index: Int) -> Bool)?
 
@@ -283,26 +284,32 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 
 	func isSelected(index: Int) -> Bool
 	{
-		selectedItems?.wrappedValue.contains(index) ?? false
+		selectedIndexes?.wrappedValue.contains(index) ?? false
 	}
 
 	func updateSelection(_ indices: Set<Int>)
 	{
 		DispatchQueue.main.async {
-			self.selectedItems?.wrappedValue = Set(indices)
+			let indexes = Set(indices)
+			self.selectedIndexes?.wrappedValue = indexes
+			self.onUpdateSelection?(indexes)
 		}
 	}
 
 	func shouldSelect(_ indexPath: IndexPath) -> Bool
 	{
-		guard data.containsIndex(indexPath.item) else { return (selectedItems != nil) }
-		return shouldAllowSelection?(indexPath.item) ?? (selectedItems != nil)
+		guard data.containsIndex(indexPath.item) else { return isSelectionSupported }
+		return shouldAllowSelection?(indexPath.item) ?? isSelectionSupported
 	}
 
 	func shouldDeselect(_ indexPath: IndexPath) -> Bool
 	{
-		guard data.containsIndex(indexPath.item) else { return (selectedItems != nil) }
-		return shouldAllowDeselection?(indexPath.item) ?? (selectedItems != nil)
+		guard data.containsIndex(indexPath.item) else { return isSelectionSupported }
+		return shouldAllowDeselection?(indexPath.item) ?? isSelectionSupported
+	}
+
+	private var isSelectionSupported: Bool {
+		(selectedIndexes != nil) || (onUpdateSelection != nil)
 	}
 }
 

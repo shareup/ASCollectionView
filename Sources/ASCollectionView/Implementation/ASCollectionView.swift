@@ -53,6 +53,9 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 	internal var dodgeKeyboard: Bool = true
 
+	internal var allowsSelection: Bool = true
+	internal var allowsMultipleSelection: Bool = false
+
 	// MARK: Environment variables
 
 	// SwiftUI environment
@@ -195,9 +198,8 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			assignIfChanged(collectionView, \.keyboardDismissMode, newValue: .onDrag)
 			updateCollectionViewContentInsets(collectionView)
 
-			let isEditing = parent.editMode?.wrappedValue.isEditing ?? false
-			assignIfChanged(collectionView, \.allowsSelection, newValue: isEditing)
-			assignIfChanged(collectionView, \.allowsMultipleSelection, newValue: isEditing)
+			assignIfChanged(collectionView, \.allowsSelection, newValue: parent.allowsSelection)
+			assignIfChanged(collectionView, \.allowsMultipleSelection, newValue: parent.allowsMultipleSelection)
 		}
 
 		func updateCollectionViewContentInsets(_ collectionView: UICollectionView)
