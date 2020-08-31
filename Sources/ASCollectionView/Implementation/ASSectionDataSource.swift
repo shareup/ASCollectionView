@@ -295,19 +295,19 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 			self.onUpdateSelection?(indexes)
 		}
 	}
-	
+
 	func shouldSelect(_ indexPath: IndexPath) -> Bool
 	{
 		guard data.containsIndex(indexPath.item) else { return isSelectionSupported }
 		return shouldAllowSelection?(indexPath.item) ?? isSelectionSupported
 	}
-	
+
 	func shouldDeselect(_ indexPath: IndexPath) -> Bool
 	{
 		guard data.containsIndex(indexPath.item) else { return isSelectionSupported }
 		return shouldAllowDeselection?(indexPath.item) ?? isSelectionSupported
 	}
-	
+
 	private var isSelectionSupported: Bool {
 		(selectedIndexes != nil) || (onUpdateSelection != nil)
 	}
