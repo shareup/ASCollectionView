@@ -39,6 +39,9 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 	internal var alwaysBounceVertical: Bool = false
 	internal var alwaysBounceHorizontal: Bool = false
 
+	internal var allowsSelection: Bool = true
+	internal var allowsMultipleSelection: Bool = false
+
 	internal var scrollPositionSetter: Binding<ASCollectionViewScrollPosition?>?
 
 	internal var animateOnDataRefresh: Bool = true
@@ -195,9 +198,8 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			assignIfChanged(collectionView, \.keyboardDismissMode, newValue: .onDrag)
 			updateCollectionViewContentInsets(collectionView)
 
-			let isEditing = parent.editMode?.wrappedValue.isEditing ?? false
-			assignIfChanged(collectionView, \.allowsSelection, newValue: isEditing)
-			assignIfChanged(collectionView, \.allowsMultipleSelection, newValue: isEditing)
+			assignIfChanged(collectionView, \.allowsSelection, newValue: parent.allowsSelection)
+			assignIfChanged(collectionView, \.allowsMultipleSelection, newValue: parent.allowsMultipleSelection)
 		}
 
 		func updateCollectionViewContentInsets(_ collectionView: UICollectionView)
