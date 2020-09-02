@@ -28,6 +28,7 @@ internal protocol ASSectionDataSourceProtocol
 	func getContextMenu(for indexPath: IndexPath) -> UIContextMenuConfiguration?
 	func getSelfSizingSettings(context: ASSelfSizingContext) -> ASSelfSizingConfig?
 
+	func getSelectedIndexes() -> Set<Int>?
 	func isSelected(index: Int) -> Bool
 	func updateSelection(_ indices: Set<Int>)
 	func shouldSelect(_ indexPath: IndexPath) -> Bool
@@ -279,6 +280,11 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 	func getSelfSizingSettings(context: ASSelfSizingContext) -> ASSelfSizingConfig?
 	{
 		selfSizingConfig?(context)
+	}
+
+	func getSelectedIndexes() -> Set<Int>?
+	{
+		selectedIndexes?.wrappedValue
 	}
 
 	func isSelected(index: Int) -> Bool
