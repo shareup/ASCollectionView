@@ -986,8 +986,8 @@ internal protocol ASCollectionViewCoordinator: AnyObject
 	func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath)
 	func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath)
 	func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool
-    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath)
-    func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath)
+	func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath)
+	func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath)
 	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool
 	func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
