@@ -318,8 +318,9 @@ internal struct ASSectionDataSource<DataCollection: RandomAccessCollection, Data
 		return shouldAllowHighlight?(indexPath.item) ?? isHighlightable
 	}
 
-	private var isHighlightable: Bool {
-		highlightedIndexes != nil
+	private var isHighlightable: Bool
+	{
+		highlightedIndexes != nil || selectedIndexes != nil
 	}
 
 	func getSelectedIndexes() -> Set<Int>?
