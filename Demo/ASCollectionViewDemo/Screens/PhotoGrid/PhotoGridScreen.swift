@@ -7,8 +7,8 @@ import UIKit
 struct PhotoGridScreen: View
 {
 	@State var data: [Post] = DataSource.postsForGridSection(1, number: 1000)
+	@State var highlightedIndexes: Set<Int> = []
 	@State var selectedIndexes: Set<Int> = []
-    @State var highlightedIndexes: Set<Int> = []
 
 	@Environment(\.editMode) private var editMode
 	var isEditing: Bool
@@ -23,8 +23,8 @@ struct PhotoGridScreen: View
 		ASCollectionViewSection(
 			id: 0,
 			data: data,
+			highlightedIndexes: $highlightedIndexes,
 			selectedIndexes: $selectedIndexes,
-            highlightedIndexes: $highlightedIndexes,
 			onCellEvent: onCellEvent
             )
 		{ item, state in
@@ -41,26 +41,8 @@ struct PhotoGridScreen: View
 					.buttonStyle(PlainButtonStyle())
 					.disabled(self.isEditing)
 				}
-                
-                
 
-				if state.isHighlighted
-				{
-					ZStack
-					{
-						Circle()
-							.fill(Color.blue)
-						Circle()
-							.strokeBorder(Color.white, lineWidth: 2)
-						Image(systemName: "checkmark")
-							.font(.system(size: 10, weight: .bold))
-							.foregroundColor(.white)
-					}
-					.frame(width: 20, height: 20)
-					.padding(10)
-				}
-                
-                
+				self.selectionIndicator(isSelected: state.isSelected, isHighlighted: state.isHighlighted)
 			}
 		}
 	}
@@ -93,6 +75,32 @@ struct PhotoGridScreen: View
 
 					EditButton()
 			})
+	}
+
+	private func selectionIndicator(isSelected: Bool, isHighlighted: Bool) -> some View
+	{
+		let scale: CGFloat
+		switch (isSelected, isHighlighted) {
+		case (true, true): scale = 0.75
+		case (true, false): scale = 1
+		case (false, true): scale = 1.15
+		case (false, false): scale = 0
+		}
+
+		return ZStack
+			{
+				Circle()
+					.fill(Color.blue)
+				Circle()
+					.strokeBorder(Color.white, lineWidth: 2)
+				Image(systemName: "checkmark")
+					.font(.system(size: 10, weight: .bold))
+					.foregroundColor(.white)
+			}
+			.frame(width: 20, height: 20)
+			.padding(10)
+			.scaleEffect(scale)
+			.animation(Animation.easeInOut(duration: 0.15))
 	}
 
 	func onCellEvent(_ event: CellEvent<Post>)

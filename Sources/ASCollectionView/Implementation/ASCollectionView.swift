@@ -661,6 +661,21 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			(view as? ASCollectionViewSupplementaryView)?.didDisappear()
 		}
 
+		public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool
+		{
+			return parent.sections[safe: indexPath.section]?.dataSource.shouldHighlight(indexPath) ?? true
+		}
+
+		public func collectionView(_ collectionView:UICollectionView, didHighlightItemAt indexPath: IndexPath)
+		{
+			parent.sections[safe: indexPath.section]?.dataSource.highlightIndex(indexPath.item)
+		}
+
+		public func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath)
+		{
+			parent.sections[safe: indexPath.section]?.dataSource.unhighlightIndex(indexPath.item)
+		}
+
 		public func collectionView(_ collectionView: UICollectionView, willSelectItemAt indexPath: IndexPath) -> IndexPath?
 		{
 			guard parent.sections[safe: indexPath.section]?.dataSource.shouldSelect(indexPath) ?? true else
@@ -678,25 +693,6 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			}
 			return indexPath
 		}
-        
-        public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-            print(#function)
-
-            return true
-        }
-        
-        public func collectionView(_ collectionView:UICollectionView, didHighlightItemAt indexPath: IndexPath)
-        {
-            print(#function)
-            parent.sections[safe: indexPath.section]?.dataSource.highlightIndex(indexPath.item)
-        }
-        
-        public func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath)
-        {
-            print(#function)
-
-            parent.sections[safe: indexPath.section]?.dataSource.unhighlightIndex(indexPath.item)
-        }
 
 		public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
 		{
@@ -986,6 +982,7 @@ internal protocol ASCollectionViewCoordinator: AnyObject
 	func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
 	func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath)
 	func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath)
+	func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath)
     func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath)
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
